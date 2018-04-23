@@ -13,8 +13,7 @@ require.config({
 		"webjars/ace/1.2.0/src/ace" : "../../webjars/ace/1.2.0/src/ace",
 		"xtext/xtext-ace" : "../../xtext/2.9.0/xtext-ace",
 		"jstree" : "../../webjars/jstree/3.2.1/jstree.min",
-		"ngJsTree": "../../webjars/ng-js-tree/0.0.6/dist/ngJsTree.min",
-		"angular-toastr" : "../../webjars/angular-toastr/2.1.1/angular-toastr.tpls.min"
+		"ngJsTree": "../../webjars/ng-js-tree/0.0.6/dist/ngJsTree.min"
 	},
 	waitSeconds: 0,
 	shim: {
@@ -44,9 +43,6 @@ require.config({
 		},
 		'ngJsTree' : {
 			deps: ["jstree", "angular"]
-		},
-		'angular-toastr' : {
-			deps: ["angular", "angular-animate"]
 		}
 	}
 });

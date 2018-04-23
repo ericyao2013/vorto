@@ -2,7 +2,6 @@ define("devtoolApp", [
   "angular",
   "angular-aria",
   "angular-route",
-  "angular-toastr",
   "angular-animate",
   "angular-bootstrap",
   "angular-bootstrap-templates",
@@ -21,11 +20,10 @@ define("devtoolApp", [
     "ui.bootstrap",
     "ui.bootstrap.tpls",
     "ngJsTree",
-    "toastr",
     "apps.config",
     "apps.controller",
     "apps.directive",
-    "apps.service",
+    "apps.service"
   ]);
 
   app.bootstrap = function() {

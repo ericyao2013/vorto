@@ -1,7 +1,5 @@
 define([
-  '../init/AppConfig',
-
-  '../common/ToastrConfig'
+  '../init/AppConfig'
 
 ], function () {
 

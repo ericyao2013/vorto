@@ -3,14 +3,16 @@ define(["../init/AppController"], function(controllers) {
 
   ProjectController.$inject = [
     "$rootScope", "$scope", "$location", "$http", "$uibModal",
-    "ProjectDataService", "ToastrService", "ShareDataService"
+    "ProjectDataService", "ShareDataService"
   ]
 
-  function ProjectController($rootScope, $scope, $location, $http, $uibModal, ProjectDataService, ToastrService, ShareDataService) {
+  function ProjectController($rootScope, $scope, $location, $http, $uibModal, ProjectDataService, ShareDataService) {
     $scope.selectedProject = null;
     $scope.projects = [];
     $scope.topRow = [];
     $scope.showLoader = false;
+    
+    $scope.alert = null;
 
     var gridSize = 6;
 
@@ -53,7 +55,7 @@ define(["../init/AppController"], function(controllers) {
       }).catch(function(error){
         var message = "Failed to delete project " +  projectName ;
         var params = {message: message};
-        ToastrService.createErrorToast(params);
+        $scope.alert = {msg: message, type: 'danger'};
       });
      };
 
@@ -64,7 +66,7 @@ define(["../init/AppController"], function(controllers) {
         if (data.message === "resource already exists") {
           var message = "Project " + projectName + " already exists";
           var params = {message: message};
-          ToastrService.createErrorToast(params);
+          $scope.alert = {msg: message, type: 'danger'};
         } else {
           $location.path("projects/" + projectName);
           $location.replace();
@@ -72,7 +74,7 @@ define(["../init/AppController"], function(controllers) {
       }).catch(function(error){
           var message = "Failed to create Project " + projectName;
           var params = {message: message};
-          ToastrService.createErrorToast(params);
+          $scope.alert = {msg: message, type: 'danger'};
       });
     }
 
@@ -87,7 +89,7 @@ define(["../init/AppController"], function(controllers) {
         $scope.projects = [];
         var message = "Failed to load projects";
         var params = {message: message};
-        ToastrService.createErrorToast(params);
+        $scope.alert = {msg: message, type: 'danger'};
       });
     }
 

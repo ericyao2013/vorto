@@ -6,8 +6,7 @@ define([
   '../data/project/ProjectDataService',
   '../data/publish/PublishDataService',
 
-  '../common/ShareDataService',
-  '../common/ToastrService'
+  '../common/ShareDataService'
 ], function () {
 
 });

@@ -3,6 +3,9 @@
 	<div class="col-md-12">
 		<div class="box box-default">
 					<div class="box-body">
+						<div class="row">
+							<uib-alert dismiss-on-timeout=5000 ng-if="alert != null" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    					</div>
 						<!--div class="row">
 							<div class="col-md-3">
 						<a class="btn btn-default btn-block btn-lg" ng-click="openCreateProjectModal()">

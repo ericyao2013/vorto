@@ -3,11 +3,11 @@ define(["../init/AppController"], function(controllers) {
 
   EditorController.$inject = [
     "$q", "$rootScope", "$scope", "$location", "$window", "$routeParams", "$compile",
-    "$uibModal", "toastr", "ShareDataService", "ProjectDataService",
-    "EditorDataService", "PublishDataService", "ToastrService"
+    "$uibModal", "ShareDataService", "ProjectDataService",
+    "EditorDataService", "PublishDataService"
   ]
 
-  function EditorController($q, $rootScope, $scope, $location, $window, $routeParams, $compile, $uibModal, toastr, ShareDataService, ProjectDataService, EditorDataService, PublishDataService, ToastrService) {
+  function EditorController($q, $rootScope, $scope, $location, $window, $routeParams, $compile, $uibModal, ShareDataService, ProjectDataService, EditorDataService, PublishDataService) {
     $scope.error = null;
     $scope.errorMessage = null;
     $scope.validationError = false;
@@ -44,6 +44,12 @@ define(["../init/AppController"], function(controllers) {
 
     var DYNAMIC_VALIDATION = "Dynamic Validation";
     $scope.toggleButtonText = DYNAMIC_VALIDATION;
+    
+    $scope.alert = null;
+  	
+	$scope.closeAlert = function() {
+	    $scope.alert = null;
+	};
 
     $scope.editorTypes = [{
       language: "infomodel",
@@ -263,7 +269,7 @@ define(["../init/AppController"], function(controllers) {
           var params = {
             message: message
           };
-          ToastrService.createErrorToast(params);
+          $scope.alert = {msg: message, type: 'danger'};
         });
       } else {
         ShareDataService.setUnsavedFiles(unsavedFiles);
@@ -316,7 +322,7 @@ define(["../init/AppController"], function(controllers) {
         var params = {
           message: message
         };
-        ToastrService.createErrorToast(params);
+        $scope.alert = {msg: message, type: 'danger'};
       });
     }
 
@@ -394,7 +400,7 @@ define(["../init/AppController"], function(controllers) {
         var params = {
           message: message
         };
-        ToastrService.createErrorToast(params);
+        $scope.alert = {msg: message, type: 'danger'};
       });
     });
 
@@ -524,7 +530,7 @@ define(["../init/AppController"], function(controllers) {
           var params = {
             message: message
           };
-          ToastrService.createErrorToast(params);
+          $scope.alert = {msg: message, type: 'danger'};
         } else {
           $scope.counter++;
           var tabId = $scope.counter;
@@ -554,7 +560,7 @@ define(["../init/AppController"], function(controllers) {
         var params = {
           message: message
         };
-        ToastrService.createErrorToast(params);
+        $scope.alert = {msg: message, type: 'danger'};
       });
     }
 
@@ -707,7 +713,7 @@ define(["../init/AppController"], function(controllers) {
         var params = {
           message: message
         };
-        ToastrService.createWarningToast(params);
+        $scope.alert = {msg: message, type: 'warning'};
         $scope.showImportButton = true;
         return;
       }
@@ -736,7 +742,7 @@ define(["../init/AppController"], function(controllers) {
             var params = {
               message: message
             };
-            ToastrService.createErrorToast(params);
+            $scope.alert = {msg: message, type: 'danger'};
             $scope.showImportButton = true;
           });
         } else {
@@ -744,7 +750,7 @@ define(["../init/AppController"], function(controllers) {
           var params = {
             message: message
           };
-          ToastrService.createWarningToast(params);
+          $scope.alert = {msg: message, type: 'warning'};
           $scope.showImportButton = true;
         }
       } else {
@@ -752,7 +758,7 @@ define(["../init/AppController"], function(controllers) {
         var params = {
           message: message
         };
-        ToastrService.createWarningToast(params);
+        $scope.alert = {msg: message, type: 'warning'};
         $scope.showImportButton = true;
       }
     }
@@ -777,14 +783,14 @@ define(["../init/AppController"], function(controllers) {
           var params = {
             message: message
           };
-          ToastrService.createErrorToast(params);
+          $scope.alert = {msg: message, type: 'danger'};
         });
       } else {
         var message = "Your Vorto Model contains errors. Please correct and try again.";
         var params = {
           message: message
         };
-        ToastrService.createWarningToast(params);
+        $scope.alert = {msg: message, type: 'warning'};
       }
     }
 
@@ -822,7 +828,7 @@ define(["../init/AppController"], function(controllers) {
           var params = {
             message: message
           };
-          ToastrService.createWarningToast(params);
+          $scope.alert = {msg: message, type: 'warning'};
         }
       }).catch(function(error) {
         $scope.models = [];
@@ -831,7 +837,7 @@ define(["../init/AppController"], function(controllers) {
         var params = {
           message: message
         };
-        ToastrService.createErrorToast(params);
+        $scope.alert = {msg: message, type: 'danger'};
       });
     }
 
@@ -894,7 +900,7 @@ define(["../init/AppController"], function(controllers) {
                 var params = {
                   message: message
                 };
-                ToastrService.createSuccessToast(params);
+                $scope.alert = {msg: message, type: 'success'};
               });
             }
           });
@@ -912,10 +918,7 @@ define(["../init/AppController"], function(controllers) {
       editor.xtextServices.saveResource().then(function(data) {
         editor.lastSavedValue = editor.getValue();
         var message = "Model " + tab.name + " saved";
-        var params = {
-          message: message
-        };
-        ToastrService.createSuccessToast(params);
+        $scope.alert = {msg: message, type: 'success'};
       });
     }
 
@@ -962,7 +965,7 @@ define(["../init/AppController"], function(controllers) {
           var params = {
             message: message
           };
-          ToastrService.createSuccessToast(params);
+          $scope.alert = {msg: message, type: 'success'};
         } else {
           var message = ""
           data.issues.forEach(function(issue) {
@@ -972,14 +975,14 @@ define(["../init/AppController"], function(controllers) {
           var params = {
             message: message
           };
-          ToastrService.createErrorToast(params);
+          $scope.alert = {msg: message, type: 'danger'};
         }
       }).catch(function(error) {
         var message = "Failed to validate resource";
         var params = {
           message: message
         };
-        ToastrService.createErrorToast(params);
+        $scope.alert = {msg: message, type: 'danger'};
       });
     }
   }
