@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.api.ModelState;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
@@ -129,6 +130,11 @@ public class JcrModelRepository implements IModelRepository {
 		resource.setDescription(node.getProperty("vorto:description").getString());
 		resource.setDisplayName(node.getProperty("vorto:displayname").getString());
 		resource.setCreationDate(node.getProperty("jcr:created").getDate().getTime());
+		if (node.hasProperty("vorto:state")) {
+			resource.setState(ModelState.valueOf(node.getProperty("vorto:state").getString()));
+		} else {
+			resource.setState(ModelState.IN_DRAFT);
+		}
 		if (node.hasProperty("vorto:author")) {
 			resource.setAuthor(node.getProperty("vorto:author").getString());
 		}
@@ -255,6 +261,7 @@ public class JcrModelRepository implements IModelRepository {
 				fileNode.addMixin("vorto:meta");
 				fileNode.addMixin("mix:referenceable");
 				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
+				fileNode.setProperty("vorto:state", ModelState.IN_DRAFT.toString());
 				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
 				Binary binary = session.getValueFactory()
 						.createBinary(new ByteArrayInputStream((byte[]) uploadedItem.getValue()));
@@ -321,7 +328,7 @@ public class JcrModelRepository implements IModelRepository {
 			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
 		}
 	}
-
+	
 	@PostConstruct
 	public void createValidators() {
 		this.validators.add(new DuplicateModelValidation(this, userRepository));
@@ -462,6 +469,7 @@ public class JcrModelRepository implements IModelRepository {
 			Node fileNode = folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").hasNext()
 					? folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").nextNode() : null;
 			fileNode.setProperty("vorto:author", model.getAuthor());
+			fileNode.setProperty("vorto:state", model.getState().toString());
 			
 			session.save();
 			
