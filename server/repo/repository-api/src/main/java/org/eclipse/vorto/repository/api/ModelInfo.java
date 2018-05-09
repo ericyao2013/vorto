@@ -28,7 +28,7 @@ public class ModelInfo extends AbstractModel {
 	protected String author;
 	protected Date creationDate;
 	protected boolean hasImage = false;
-	protected ModelState state;
+	protected String state;
 		
 	protected List<ModelId> referencedBy = new ArrayList<ModelId>();
 	
@@ -81,11 +81,11 @@ public class ModelInfo extends AbstractModel {
 		this.hasImage = hasImage;
 	}
 
-	public ModelState getState() {
+	public String getState() {
 		return state;
 	}
 
-	public void setState(ModelState state) {
+	public void setState(String state) {
 		this.state = state;
 	}
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -16,26 +16,37 @@ package org.eclipse.vorto.repository.workflow;
 
 import java.util.List;
 
-import org.eclipse.vorto.repository.api.ModelAction;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.ModelState;
 
-public interface IModelWorkflow {
+public interface IWorkflowService {
+	
+	/**
+	 * 
+	 * @param model
+	 * @return
+	 */
+	ModelInfo start(ModelId model);
 
 	/**
 	 * Transitions the given models to the next possible state
-	 * @param models
+	 * @param model
+	 * @param action
 	 */
-	ModelInfo transition(ModelId model, ModelAction action);
+	ModelInfo doAction(ModelId model, String action);
 	
-	List<ModelAction> getPossibleActions(ModelId model);
+	/**
+	 * 
+	 * @param model
+	 * @return
+	 */
+	List<String> getPossibleActions(ModelId model);
 	
 	/**
 	 * 
 	 * @param state
 	 * @return
 	 */
-	List<ModelInfo> getModelsByState(ModelState state);
+	List<ModelInfo> getModelsByState(String state);
 	
 }

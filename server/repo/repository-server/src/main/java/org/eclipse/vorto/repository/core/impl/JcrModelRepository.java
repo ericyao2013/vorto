@@ -44,7 +44,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.ModelState;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
@@ -62,6 +61,7 @@ import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ModelReferencesValidation;
 import org.eclipse.vorto.repository.core.impl.validation.TypeImportValidation;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -131,10 +131,8 @@ public class JcrModelRepository implements IModelRepository {
 		resource.setDisplayName(node.getProperty("vorto:displayname").getString());
 		resource.setCreationDate(node.getProperty("jcr:created").getDate().getTime());
 		if (node.hasProperty("vorto:state")) {
-			resource.setState(ModelState.valueOf(node.getProperty("vorto:state").getString()));
-		} else {
-			resource.setState(ModelState.IN_DRAFT);
-		}
+			resource.setState(node.getProperty("vorto:state").getString());
+		} 
 		if (node.hasProperty("vorto:author")) {
 			resource.setAuthor(node.getProperty("vorto:author").getString());
 		}
@@ -261,7 +259,6 @@ public class JcrModelRepository implements IModelRepository {
 				fileNode.addMixin("vorto:meta");
 				fileNode.addMixin("mix:referenceable");
 				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
-				fileNode.setProperty("vorto:state", ModelState.IN_DRAFT.toString());
 				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
 				Binary binary = session.getValueFactory()
 						.createBinary(new ByteArrayInputStream((byte[]) uploadedItem.getValue()));
@@ -274,8 +271,9 @@ public class JcrModelRepository implements IModelRepository {
 				contentNode.setProperty("jcr:data", binary);
 			}
 
-			session.save();
+			session.save();			
 			logger.info("Checkin successful");
+			
 			this.uploadStorage.remove(handleId);
 		} catch (Exception e) {
 			logger.error("Error checking in model", e);

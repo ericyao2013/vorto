@@ -17,75 +17,75 @@ package org.eclipse.vorto.repository.workflow;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.api.ModelAction;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.ModelState;
-import org.eclipse.vorto.repository.workflow.impl.DefaultModelWorkflow;
+import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
+import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.junit.Test;
 
 public class WorkflowTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testGetModelByState() {
-		IModelWorkflow workflow = new DefaultModelWorkflow(this.modelRepository);
-		checkinModel("Color.type");	
-		assertEquals(1,workflow.getModelsByState(ModelState.IN_DRAFT).size());
+		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository);
+		ModelInfo model = checkinModel("Color.type");	
+		workflow.start(model.getId());
+		assertEquals(1,workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName()).size());
 	}
 	
 	@Test
 	public void testGetPossibleActionsForDraftState() {
-		IModelWorkflow workflow = new DefaultModelWorkflow(this.modelRepository);
-		checkinModel("Color.type");	
-		final ModelInfo model = workflow.getModelsByState(ModelState.IN_DRAFT).get(0);
+		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository);
+		ModelInfo model = checkinModel("Color.type");	
+		workflow.start(model.getId());
 		assertEquals(1,workflow.getPossibleActions(model.getId()).size());
-		assertEquals(ModelAction.RELEASE,workflow.getPossibleActions(model.getId()).get(0));
+		assertEquals(SimpleWorkflowModel.ACTION_RELEASE.getName(),workflow.getPossibleActions(model.getId()).get(0));
 	}
 	
 	@Test
 	public void testStartReviewProcessForModel() {
-		IModelWorkflow workflow = new DefaultModelWorkflow(this.modelRepository);
-		checkinModel("Color.type");	
-		ModelInfo model = workflow.getModelsByState(ModelState.IN_DRAFT).get(0);
-		model = workflow.transition(model.getId(), ModelAction.RELEASE);
-		assertEquals(ModelState.IN_REVIEW,model.getState());
-		assertEquals(0,workflow.getModelsByState(ModelState.IN_DRAFT).size());
-		assertEquals(1,workflow.getModelsByState(ModelState.IN_REVIEW).size());
+		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository);
+		ModelInfo model = checkinModel("Color.type");	
+		workflow.start(model.getId());
+		model = workflow.doAction(model.getId(), SimpleWorkflowModel.ACTION_RELEASE.getName());
+		assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(),model.getState());
+		assertEquals(0,workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName()).size());
+		assertEquals(1,workflow.getModelsByState(SimpleWorkflowModel.STATE_IN_REVIEW.getName()).size());
 		assertEquals(2,workflow.getPossibleActions(model.getId()).size());
 	}
 	
 	@Test (expected = WorkflowException.class)
 	public void testTransitionWorkflowInvalidAction() {
-		IModelWorkflow workflow = new DefaultModelWorkflow(this.modelRepository);
-		checkinModel("Color.type");	
-		ModelInfo model = workflow.getModelsByState(ModelState.IN_DRAFT).get(0);
-		model = workflow.transition(model.getId(), ModelAction.APPROVE);
+		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository);
+		ModelInfo model = checkinModel("Color.type");	
+		workflow.start(model.getId());
+		model = workflow.doAction(model.getId(), SimpleWorkflowModel.ACTION_APPROVE.getName());
 	}
 	
 	@Test
 	public void testApproveModelInReviewState() {
-		IModelWorkflow workflow = new DefaultModelWorkflow(this.modelRepository);
-		checkinModel("Color.type");	
-		ModelInfo model = workflow.getModelsByState(ModelState.IN_DRAFT).get(0);
-		model = workflow.transition(model.getId(), ModelAction.RELEASE);
-		assertEquals(ModelState.IN_REVIEW,model.getState());
-		model = workflow.transition(model.getId(), ModelAction.APPROVE);
-		assertEquals(1,workflow.getModelsByState(ModelState.RELEASED).size());
-		assertEquals(0,workflow.getModelsByState(ModelState.IN_REVIEW).size());
-		assertEquals(0,workflow.getModelsByState(ModelState.IN_DRAFT).size());
+		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository);
+		ModelInfo model = checkinModel("Color.type");	
+		workflow.start(model.getId());
+		model = workflow.doAction(model.getId(), SimpleWorkflowModel.ACTION_RELEASE.getName());
+		assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(),model.getState());
+		model = workflow.doAction(model.getId(), SimpleWorkflowModel.ACTION_APPROVE.getName());
+		assertEquals(1,workflow.getModelsByState(SimpleWorkflowModel.STATE_RELEASED.getName()).size());
+		assertEquals(0,workflow.getModelsByState(SimpleWorkflowModel.STATE_IN_REVIEW.getName()).size());
+		assertEquals(0,workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName()).size());
 		assertEquals(0,workflow.getPossibleActions(model.getId()).size());
 	}
 	
 	@Test
 	public void testRejectModelInReviewState() {
-		IModelWorkflow workflow = new DefaultModelWorkflow(this.modelRepository);
-		checkinModel("Color.type");	
-		ModelInfo model = workflow.getModelsByState(ModelState.IN_DRAFT).get(0);
-		model = workflow.transition(model.getId(), ModelAction.RELEASE);
-		assertEquals(ModelState.IN_REVIEW,model.getState());
-		model = workflow.transition(model.getId(), ModelAction.REJECT);
-		assertEquals(0,workflow.getModelsByState(ModelState.RELEASED).size());
-		assertEquals(0,workflow.getModelsByState(ModelState.IN_REVIEW).size());
-		assertEquals(1,workflow.getModelsByState(ModelState.IN_DRAFT).size());
+		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository);
+		ModelInfo model = checkinModel("Color.type");	
+		workflow.start(model.getId());
+		model = workflow.doAction(model.getId(), SimpleWorkflowModel.ACTION_RELEASE.getName());
+		assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(),model.getState());
+		model = workflow.doAction(model.getId(), SimpleWorkflowModel.ACTION_REJECT.getName());
+		assertEquals(0,workflow.getModelsByState(SimpleWorkflowModel.STATE_RELEASED.getName()).size());
+		assertEquals(0,workflow.getModelsByState(SimpleWorkflowModel.STATE_IN_REVIEW.getName()).size());
+		assertEquals(1,workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName()).size());
 		assertEquals(1,workflow.getPossibleActions(model.getId()).size());
 	}
 }

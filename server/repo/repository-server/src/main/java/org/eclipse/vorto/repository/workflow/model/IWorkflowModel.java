@@ -12,16 +12,14 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.workflow;
+package org.eclipse.vorto.repository.workflow.model;
 
-public class WorkflowException extends RuntimeException {
+import java.util.Optional;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public WorkflowException(String msg) {
-		super(msg);
-	}
+public interface IWorkflowModel extends IWorkflowElement {
+	
+	IAction getInitialAction();
+	
+	Optional<IState> getState(String name);
+	
 }
