@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -12,14 +12,12 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.core.exceptions;
+package org.eclipse.vorto.repository.upgrade;
 
-public class BulkUploadException extends RuntimeException {
-
-	private static final long serialVersionUID = -5865600232611276950L;
-
-	public BulkUploadException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
+/**
+ * This condition to test whether a task should be run or not 
+ *
+ */
+public interface IUpgradeTaskCondition {
+	boolean shouldExecuteTask();
 }
