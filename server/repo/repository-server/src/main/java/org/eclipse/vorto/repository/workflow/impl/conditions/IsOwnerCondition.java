@@ -12,13 +12,17 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.workflow.model;
+package org.eclipse.vorto.repository.workflow.impl.conditions;
 
-import java.util.List;
+import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
 
-public interface IAction extends IWorkflowElement {
+public class IsOwnerCondition implements IWorkflowCondition {
 
-	IState getTo();
-	
-	List<IWorkflowCondition> getConditions();
+	@Override
+	public boolean passesCondition(ModelInfo model, IUserContext user) {
+		return model.getAuthor().equals(user.getHashedUsername());
+	}
+
 }

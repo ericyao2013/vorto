@@ -14,14 +14,21 @@
  */
 package org.eclipse.vorto.repository.workflow.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.vorto.repository.workflow.model.IAction;
 import org.eclipse.vorto.repository.workflow.model.IState;
+import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
 
 public class DefaultAction implements IAction {
 
 	private String name;
 	private String description;
 	private IState to;
+	private List<IWorkflowCondition> conditions = new ArrayList<IWorkflowCondition>();
 	
 	public DefaultAction(String name, String description) {
 		this.name = name;
@@ -34,6 +41,10 @@ public class DefaultAction implements IAction {
 	
 	public void setTo(IState to) {
 		this.to = to;
+	}
+	
+	public void setConditions(IWorkflowCondition...conditions) {
+		this.conditions = Arrays.asList(conditions);
 	}
 
 	@Override
@@ -54,6 +65,11 @@ public class DefaultAction implements IAction {
 	@Override
 	public String toString() {
 		return "DefaultAction [name=" + name + ", description=" + description + ", to=" + to + "]";
+	}
+
+	@Override
+	public List<IWorkflowCondition> getConditions() {
+		return Collections.unmodifiableList(conditions);
 	}
 	
 	

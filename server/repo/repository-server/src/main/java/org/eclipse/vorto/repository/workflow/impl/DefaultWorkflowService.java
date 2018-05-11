@@ -18,13 +18,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.repository.workflow.model.IAction;
 import org.eclipse.vorto.repository.workflow.model.IState;
+import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,21 +38,22 @@ public class DefaultWorkflowService implements IWorkflowService {
 	@Autowired
 	private IModelRepository modelRepository;
 
-	private static final IWorkflowModel SIMPLE_WORKFLOW = new SimpleWorkflowModel();
+	private IWorkflowModel SIMPLE_WORKFLOW = null;
 
-	public DefaultWorkflowService(IModelRepository modelRepository) {
+	public DefaultWorkflowService(IModelRepository modelRepository, IUserRepository userRepository) {
 		this.modelRepository = modelRepository;
+		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository);
 	}
 
 	public DefaultWorkflowService() {
 	}
 
 	@Override
-	public ModelInfo doAction(ModelId model, String actionName) {
+	public ModelInfo doAction(ModelId model,IUserContext user, String actionName) {
 		ModelInfo modelInfo = modelRepository.getById(model);
 		final Optional<IState> state = SIMPLE_WORKFLOW.getState(modelInfo.getState());
 		final Optional<IAction> action = state.get().getAction(actionName);
-		if (action.isPresent()) {
+		if (action.isPresent() && passesConditions(action.get().getConditions(),modelInfo,user)) {
 			final IState newState = action.get().getTo();
 			modelInfo.setState(newState.getName());
 			return modelRepository.updateMeta(modelInfo);
@@ -59,11 +63,20 @@ public class DefaultWorkflowService implements IWorkflowService {
 	}
 
 	@Override
-	public List<String> getPossibleActions(ModelId model) {
+	public List<String> getPossibleActions(ModelId model, IUserContext user) {
 		ModelInfo modelInfo = modelRepository.getById(model);
 		Optional<IState> state = SIMPLE_WORKFLOW.getState(modelInfo.getState());
-		// FIXME: actions should be filtered based on permissions.
-		return state.get().getActions().stream().map(t -> t.getName()).collect(Collectors.toList());
+		return state.get().getActions().stream().filter(action -> passesConditions(action.getConditions(),modelInfo, user)).map(t -> t.getName()).collect(Collectors.toList());
+	}
+	
+	private boolean passesConditions(List<IWorkflowCondition> conditions,ModelInfo model, IUserContext user) {
+		for (IWorkflowCondition condition : conditions) {
+			if (!condition.passesCondition(model, user)) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	@Override
@@ -78,6 +91,8 @@ public class DefaultWorkflowService implements IWorkflowService {
 	public void setModelRepository(IModelRepository modelRepository) {
 		this.modelRepository = modelRepository;
 	}
+	
+	
 
 	@Override
 	public ModelInfo start(ModelId modelId) {

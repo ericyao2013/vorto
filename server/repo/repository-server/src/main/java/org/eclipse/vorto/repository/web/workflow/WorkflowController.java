@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +41,7 @@ public class WorkflowController {
 									    		@ApiParam(value = "version", required = true) @PathVariable String version) {
     	
     	final ModelId modelId = new ModelId(name, namespace, version);
-    	return workflowService.getPossibleActions(modelId);
+    	return workflowService.getPossibleActions(modelId,UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
     
     @ApiOperation(value = "Transitions the model state to the next for the provided action.")
@@ -52,7 +54,7 @@ public class WorkflowController {
 									    		@ApiParam(value = "actionName", required = true) @PathVariable String actionName) {
     	
     	final ModelId modelId = new ModelId(name, namespace, version);
-    	return workflowService.doAction(modelId, actionName);
+    	return workflowService.doAction(modelId, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()), actionName);
 	
     }
 }

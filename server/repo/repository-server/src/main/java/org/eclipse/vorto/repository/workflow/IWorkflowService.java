@@ -18,11 +18,12 @@ import java.util.List;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.IUserContext;
 
 public interface IWorkflowService {
 	
 	/**
-	 * 
+	 * Starts the workflow for the given model
 	 * @param model
 	 * @return
 	 */
@@ -31,19 +32,21 @@ public interface IWorkflowService {
 	/**
 	 * Transitions the given models to the next possible state
 	 * @param model
+	 * @param user
 	 * @param action
 	 */
-	ModelInfo doAction(ModelId model, String action);
+	ModelInfo doAction(ModelId model, IUserContext user, String action);
 	
 	/**
-	 * 
+	 * Retrieves possible actions for the given model
 	 * @param model
+	 * @param user
 	 * @return
 	 */
-	List<String> getPossibleActions(ModelId model);
+	List<String> getPossibleActions(ModelId model, IUserContext user);
 	
 	/**
-	 * 
+	 * Retrieves all models for the given state
 	 * @param state
 	 * @return
 	 */
