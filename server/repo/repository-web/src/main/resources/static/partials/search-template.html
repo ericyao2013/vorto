@@ -36,7 +36,7 @@
 							<th id="onVersion" st-sort="id.version"><a href="">Version <i class="fa fa-sort"></i>
 							</a></th>
 							<th>Description</th>
-							<th class="action">Details</th>
+							<th>State</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -49,7 +49,7 @@
 							<td>{{ model.id.namespace }}</td>
 							<td>{{ model.id.version }}</td>
 							<td>{{ model.description }}</td>
-							<td class="action"><a class="action"><i class="fa fa-info-circle"></i></a></td>
+							<td>{{ model.state }}</td>
 						</tr>
 					</tbody>
 					<tfoot>

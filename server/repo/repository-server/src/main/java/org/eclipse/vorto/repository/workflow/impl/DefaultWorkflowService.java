@@ -40,12 +40,9 @@ public class DefaultWorkflowService implements IWorkflowService {
 
 	private IWorkflowModel SIMPLE_WORKFLOW = null;
 
-	public DefaultWorkflowService(IModelRepository modelRepository, IUserRepository userRepository) {
+	public DefaultWorkflowService(@Autowired IModelRepository modelRepository, @Autowired IUserRepository userRepository) {
 		this.modelRepository = modelRepository;
 		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository);
-	}
-
-	public DefaultWorkflowService() {
 	}
 
 	@Override

@@ -61,7 +61,6 @@ import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ModelReferencesValidation;
 import org.eclipse.vorto.repository.core.impl.validation.TypeImportValidation;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
-import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
