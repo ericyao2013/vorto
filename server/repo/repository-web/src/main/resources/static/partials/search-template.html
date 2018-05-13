@@ -49,7 +49,7 @@
 							<td>{{ model.id.namespace }}</td>
 							<td>{{ model.id.version }}</td>
 							<td>{{ model.description }}</td>
-							<td>{{ model.state }}</td>
+							<td><span class="state state-{{model.state}}">{{ model.state }}</span></td>
 						</tr>
 					</tbody>
 					<tfoot>
