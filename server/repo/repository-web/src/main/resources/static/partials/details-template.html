@@ -208,9 +208,15 @@
 						  	</ul>
 						</div>
 						
-						<button class="btn btn-primary" ng-click="remove()" ng-disabled="model.referencedBy.length > 0" >Remove Model</button>
+						<button class="btn btn-primary" ng-click="remove()" ng-disabled="model.referencedBy.length > 0 || model.state == 'Released'" >Remove Model</button>
 						<br/>
-							
+						<br/>
+						<h4 class="reviews text-capitalize">Workflow Actions</h4>
+						
+						<p>
+							<button ng-repeat="action in workflowActions"  class="btn btn-primary" ng-click="takeWorkflowAction(action)">{{action}}</button>
+						</p>
+						
 					</div>
 					
 					

@@ -20,13 +20,19 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractUpgradeTask implements IUpgradeTask {
 
+	@Autowired
 	private IModelRepository modelRepository;
 	
 	public AbstractUpgradeTask(IModelRepository repository) {
 		this.modelRepository = repository;
+	}
+	
+	public AbstractUpgradeTask() {
+		
 	}
 	
 	public Optional<IUpgradeTaskCondition> condition() {

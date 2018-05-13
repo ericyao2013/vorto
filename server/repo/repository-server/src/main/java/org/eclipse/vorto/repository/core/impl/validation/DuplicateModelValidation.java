@@ -50,7 +50,7 @@ public class DuplicateModelValidation implements IModelValidator {
 		assert(context.getUserContext().getUsername() != null);
 		assert(userRepository != null);
 		
-		User user = userRepository.findByUsername(context.getUserContext().getHashedUsername()); 
+		User user = userRepository.findByUsername(context.getUserContext().getUsername()); 
 		
 		return user != null && user.getRole() != null && user.getRole().equals(Role.ADMIN);
 	}

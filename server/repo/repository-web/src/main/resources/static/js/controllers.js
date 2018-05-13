@@ -277,6 +277,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 	
     $scope.model = null;
     $scope.platformGeneratorMatrix = null;
+    $scope.workflowActions = [];
     $scope.chosenFile = false;
 
     $scope.uploadImage = function () {
@@ -457,6 +458,23 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     		}
   		}
       });
+    };
+    
+    $scope.getWorkflowActions = function() {
+    	$http.get('./rest/workflows/actions/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version)
+	        .success(function(result){
+	            $scope.workflowActions = result;
+	        });
+    };
+    
+   $scope.getWorkflowActions();
+    
+    $scope.takeWorkflowAction = function(action) {
+    	$http.put('./rest/workflows/actions/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version+'/'+action)
+	        .success(function(result){
+	            $scope.model = result;
+	            $scope.getWorkflowActions();
+	        });
     };
 
 }]);

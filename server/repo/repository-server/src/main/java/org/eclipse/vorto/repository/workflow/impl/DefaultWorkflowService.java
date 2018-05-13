@@ -78,7 +78,7 @@ public class DefaultWorkflowService implements IWorkflowService {
 
 	@Override
 	public List<ModelInfo> getModelsByState(String state) {
-		return this.modelRepository.search("state:" + state.toString());
+		return this.modelRepository.search("state:" + state);
 	}
 
 	public IModelRepository getModelRepository() {

@@ -11,7 +11,6 @@ import org.eclipse.vorto.repository.backup.impl.DefaultModelBackupService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.upgrade.impl.GdprUpgradeTask;
-import org.eclipse.vorto.repository.upgrade.impl.GdprUpgradeTaskCondition;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -30,7 +29,9 @@ public class GdprUpgradeTaskTest extends AbstractIntegrationTest {
 		repositoryManager.restore(IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
 		
 		task = new GdprUpgradeTask(this.modelRepository);
-		task.setUpgradeTaskCondition(new GdprUpgradeTaskCondition() {
+		task.setUpgradeTaskCondition(new IUpgradeTaskCondition() {
+			
+			@Override
 			public boolean shouldExecuteTask() {
 				return true;
 			}
